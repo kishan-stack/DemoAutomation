@@ -1,82 +1,108 @@
-package org.example;
+
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
 import java.time.Duration;
-import java.util.Map;
 import java.util.TreeMap;
 
-public class AutomationTask2 {
+public class EcomAutomation {
     public static void main(String[] args) throws Exception{
-        WebDriver driver = new ChromeDriver();
+        WebDriver driver = new EdgeDriver();
+
+        TakesScreenshot ts = (TakesScreenshot) driver;
         driver.get("https://amazon.in");
         driver.manage().window().maximize();
         WebElement input = driver.findElement(By.xpath("//input[@id='twotabsearchtextbox']"));
-        input.sendKeys("toys");
+        input.sendKeys("buttons");
         input.sendKeys(Keys.ENTER);
         JavascriptExecutor jsx = (JavascriptExecutor)driver;
         jsx.executeScript("window.scroll(0,250)");
 
         WebDriverWait wt = new WebDriverWait(driver, Duration.ofSeconds(8));
-        WebElement item1 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-3-announce']")));
-        item1.click();
-        Thread.sleep(2000);
-        WebElement item2 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-4-announce']")));
+
+
+        WebElement item = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-1-announce']")));
+        item.click();
+        WebElement item2 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-2-announce']")));
         item2.click();
-//        WebElement item3 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-5-announce']")));
-//        item3.click();
-        Thread.sleep(2000);
-        WebElement item4 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-6-announce']")));
-        item4.click();
+        WebElement item3 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-3-announce']")));
+        item3.click();
+//                System.out.println("Clicked button with ID: a-autoid-" + i + "-announce");
+//
         Thread.sleep(2000);
         WebElement cart = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='/gp/cart/view.html?ref_=nav_cart']")));
         cart.click();
-        TreeMap<Integer,WebElement> mpp = new TreeMap<>();
+
+        Thread.sleep(2000);
+        File srcFile = ts.getScreenshotAs(OutputType.FILE);
+        File destFile = new File("cartBeforeDeletion.png");
+        FileHandler.copy(srcFile, destFile);
+
+
+        TreeMap<Integer,String> mpp = new TreeMap<>();
 
         for (int posx = 1; posx <4; posx++) {
             try {
 
-                // Get the price using the current posx
+
                 String price = driver.findElement(By.xpath("//div[@data-csa-c-posx='" + posx + "']")).getAttribute("data-price");
                 System.out.println("Price for posx=" + posx + ": " + price);
 
-                // Wait for 2 seconds (optional, adjust or remove based on your needs)
-                Thread.sleep(2000);
+
+//                Thread.sleep(2000);
                 Integer intPRice = Integer.parseInt(price);
 
-                // Get the item name using the current posx
-                WebElement itemName = driver.findElement(By.xpath("//div[@data-csa-c-posx='" + posx + "']//span[@class='a-icon a-icon-small-trash']"));
-                System.out.println("Item Name for posx=" + posx + ": " + itemName);
-                mpp.put(intPRice,itemName);
+
+//                String ItemButton = driver.findElement(By.xpath("//div[@data-csa-c-posx='" + posx + "']//button[@data-a-selector='decrement']")).getText();
+//                System.out.println("Button for posx =" + posx + ": " + ItemButton);
+                mpp.put(intPRice,"//div[@data-csa-c-posx='" + posx + "']//button[@data-a-selector='decrement']");
 
             } catch (Exception e) {
                 System.out.println("Error retrieving data for posx=" + posx + ": " + e.getMessage());
             }
         }
-        Integer mainELem = mpp.firstKey();
-//        String ElemText = mainELem.replace("…", "");
-//        System.out.println(ElemText);
-//            for(mpp.forEach(0);)
-        mpp.forEach((key, value) -> {
-//            System.out.println("Key: " + key + ", Value: " + value);
-            if(key != mainELem)
-            {
-                try{
-                    value.click();
-                    Thread.sleep(2000);
+        String mainELem = mpp.firstEntry().getValue();
+        String ElemText = mainELem.replace("…", "");
+        System.out.println(ElemText);
 
-                }catch (Exception e)
-                {
-                    System.out.println(e);
+        for (String xpath : mpp.values()){
+            if (!xpath.equals(ElemText)){
+                try {
+                    WebElement button = driver.findElement(By.xpath(xpath));
+                    button.click();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
                 }
-
             }
-        });
-///div[@data-asin='B0D5YCYS1G']//span[@class='a-icon a-icon-small-trash']
+        }
+
+        File source = ts.getScreenshotAs(OutputType.FILE);
+        File destination = new File("cartAfterDeletion.png");
+        FileHandler.copy(source, destination);
+
+        driver.navigate().refresh();
+        try {
+            WebElement stockElement = driver.findElement(By.xpath("//*[contains(text(), 'In stock')]"));
+            String stockText = stockElement.getText();
+
+
+            System.out.println(stockText);
+//            System.out.println("The item is in stock!");
+        } catch (Exception e) {
+
+            System.out.println(e.getMessage());
+
+        }
+//        driver.navigate().refresh();
+
+
 //        //div[@data-csa-c-posx='1']//span[@class='a-truncate-cut']
-    //        System.out.println(driver.findElement(By.xpath("//div[@class='sc-badge-price-to-pay sc-apex-cart-price-to-pay']//span[@class='a-offscreen']")).getText());
+        //        System.out.println(driver.findElement(By.xpath("//div[@class='sc-badge-price-to-pay sc-apex-cart-price-to-pay']//span[@class='a-offscreen']")).getText());
     }
 }
