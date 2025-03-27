@@ -31,15 +31,19 @@ public class AutomationTask2 {
         item.click();
         Thread.sleep(2000);
 
-        WebElement item2 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-4-announce']")));
+        WebElement item2 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-5-announce']")));
         item2.click();
         Thread.sleep(2000);
 
-        WebElement item3 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-5-announce']")));
+        WebElement item3 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-7-announce']")));
         item3.click();
-//                System.out.println("Clicked button with ID: a-autoid-" + i + "-announce");
-//
         Thread.sleep(2000);
+
+        WebElement item4 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-9-announce']")));
+        item4.click();
+        Thread.sleep(2000);
+
+
         WebElement cart = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='nav-cart']")));
         cart.click();
 
@@ -51,7 +55,7 @@ public class AutomationTask2 {
 
         TreeMap<Integer,String> mpp = new TreeMap<>();
 
-        for (int posx = 1; posx <4; posx++) {
+        for (int posx = 1; posx <5; posx++) {
             try {
 
 
@@ -97,13 +101,15 @@ public class AutomationTask2 {
             String stockText = stockElement.getText();
 
 
-            System.out.println(stockText);
+            System.out.println("last item in cart is "+stockText);
 //            System.out.println("The item is in stock!");
         } catch (Exception e) {
 
             System.out.println(e.getMessage());
 
         }
+
+        driver.navigate().refresh();
         System.out.println("Screen Shot saved as cartBeforeDeletion.png");
 
         System.out.println("Screen Shot saved as cartAfterDeletion.png");
