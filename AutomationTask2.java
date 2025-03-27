@@ -1,4 +1,4 @@
-
+package org.example;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -11,9 +11,9 @@ import java.io.File;
 import java.time.Duration;
 import java.util.TreeMap;
 
-public class EcomAutomation {
+public class AutomationTask2 {
     public static void main(String[] args) throws Exception{
-        WebDriver driver = new EdgeDriver();
+        WebDriver driver = new ChromeDriver();
 
         TakesScreenshot ts = (TakesScreenshot) driver;
         driver.get("https://amazon.in");
@@ -27,16 +27,20 @@ public class EcomAutomation {
         WebDriverWait wt = new WebDriverWait(driver, Duration.ofSeconds(8));
 
 
-        WebElement item = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-1-announce']")));
+        WebElement item = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-3-announce']")));
         item.click();
-        WebElement item2 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-2-announce']")));
+        Thread.sleep(2000);
+
+        WebElement item2 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-4-announce']")));
         item2.click();
-        WebElement item3 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-3-announce']")));
+        Thread.sleep(2000);
+
+        WebElement item3 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-5-announce']")));
         item3.click();
 //                System.out.println("Clicked button with ID: a-autoid-" + i + "-announce");
 //
         Thread.sleep(2000);
-        WebElement cart = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='/gp/cart/view.html?ref_=nav_cart']")));
+        WebElement cart = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='nav-cart']")));
         cart.click();
 
         Thread.sleep(2000);
@@ -52,7 +56,7 @@ public class EcomAutomation {
 
 
                 String price = driver.findElement(By.xpath("//div[@data-csa-c-posx='" + posx + "']")).getAttribute("data-price");
-                System.out.println("Price for posx=" + posx + ": " + price);
+                System.out.println("Price for item=" + posx + ": " + price);
 
 
 //                Thread.sleep(2000);
@@ -64,12 +68,12 @@ public class EcomAutomation {
                 mpp.put(intPRice,"//div[@data-csa-c-posx='" + posx + "']//button[@data-a-selector='decrement']");
 
             } catch (Exception e) {
-                System.out.println("Error retrieving data for posx=" + posx + ": " + e.getMessage());
+                System.out.println("Error retrieving data for item=" + posx + ": " + e.getMessage());
             }
         }
         String mainELem = mpp.firstEntry().getValue();
         String ElemText = mainELem.replace("…", "");
-        System.out.println(ElemText);
+//        System.out.println(ElemText);
 
         for (String xpath : mpp.values()){
             if (!xpath.equals(ElemText)){
@@ -84,6 +88,7 @@ public class EcomAutomation {
 
         File source = ts.getScreenshotAs(OutputType.FILE);
         File destination = new File("cartAfterDeletion.png");
+
         FileHandler.copy(source, destination);
 
         driver.navigate().refresh();
@@ -99,6 +104,10 @@ public class EcomAutomation {
             System.out.println(e.getMessage());
 
         }
+        System.out.println("Screen Shot saved as cartBeforeDeletion.png");
+
+        System.out.println("Screen Shot saved as cartAfterDeletion.png");
+
 //        driver.navigate().refresh();
 
 
