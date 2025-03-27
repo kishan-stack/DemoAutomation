@@ -5,6 +5,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
@@ -19,27 +21,30 @@ public class AutomationTask2 {
         driver.get("https://amazon.in");
         driver.manage().window().maximize();
         WebElement input = driver.findElement(By.xpath("//input[@id='twotabsearchtextbox']"));
-        input.sendKeys("buttons");
+        input.sendKeys("bottles");
         input.sendKeys(Keys.ENTER);
         JavascriptExecutor jsx = (JavascriptExecutor)driver;
         jsx.executeScript("window.scroll(0,250)");
 
         WebDriverWait wt = new WebDriverWait(driver, Duration.ofSeconds(8));
+        Wait<WebDriver> FluWt = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(10))        // Maximum wait time
+                .pollingEvery(Duration.ofMillis(500))       // Polling interval
+                .ignoring(NoSuchElementException.class);
 
-
-        WebElement item = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-3-announce']")));
+        WebElement item = FluWt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-3-announce']")));
         item.click();
-        Thread.sleep(2000);
+//        Thread.sleep(2000);
 
-        WebElement item2 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-5-announce']")));
+        WebElement item2 = FluWt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-5-announce']")));
         item2.click();
-        Thread.sleep(2000);
+//        Thread.sleep(2000);
 
-        WebElement item3 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-7-announce']")));
+        WebElement item3 = FluWt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-7-announce']")));
         item3.click();
-        Thread.sleep(2000);
+//        Thread.sleep(2000);
 
-        WebElement item4 = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-9-announce']")));
+        WebElement item4 = FluWt.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='a-autoid-9-announce']")));
         item4.click();
         Thread.sleep(2000);
 
@@ -47,7 +52,7 @@ public class AutomationTask2 {
         WebElement cart = wt.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='nav-cart']")));
         cart.click();
 
-        Thread.sleep(2000);
+//        Thread.sleep(2000);
         File srcFile = ts.getScreenshotAs(OutputType.FILE);
         File destFile = new File("cartBeforeDeletion.png");
         FileHandler.copy(srcFile, destFile);
@@ -75,6 +80,7 @@ public class AutomationTask2 {
                 System.out.println("Error retrieving data for item=" + posx + ": " + e.getMessage());
             }
         }
+        Integer lowestPrice = mpp.firstKey();
         String mainELem = mpp.firstEntry().getValue();
         String ElemText = mainELem.replace("…", "");
 //        System.out.println(ElemText);
@@ -101,7 +107,7 @@ public class AutomationTask2 {
             String stockText = stockElement.getText();
 
 
-            System.out.println("last item in cart is "+stockText);
+            System.out.println("last item in cart is "+stockText+"having price "+lowestPrice);
 //            System.out.println("The item is in stock!");
         } catch (Exception e) {
 
@@ -109,7 +115,7 @@ public class AutomationTask2 {
 
         }
 
-        driver.navigate().refresh();
+
         System.out.println("Screen Shot saved as cartBeforeDeletion.png");
 
         System.out.println("Screen Shot saved as cartAfterDeletion.png");
