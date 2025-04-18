@@ -12,13 +12,7 @@ import java.util.HashMap;
 
 public class Task3_1 {
     public static void main(String[] args) throws Exception{
-//
-//        ChromeOptions chromeOptions = new ChromeOptions();
-//        String downloadPath = "/home/jaykishan.varma@apmosys.mahape/IdeaProjects/AutomationTasksRevision";
-//        HashMap<String,Object> options = new HashMap<>();
-//        options.put("profile.defaults_content_settings.popups",0);
-//        options.put("download.default_directory",downloadPath);
-//        chromeOptions.setExperimentalOption("prefs",options);
+
         WebDriver driver = new ChromeDriver();
         driver.get("https://demo.automationtesting.in/FileUpload.html");
         driver.manage().window().maximize();
@@ -43,6 +37,19 @@ public class Task3_1 {
 
         js.executeScript("window.scroll(0,250)");
         driver.findElement(By.xpath("//a[@type='button']")).click();
+        String downloadPath = "/home/jaykishan.varma@apmosys.mahape/IdeaProjects/AutomationTasksRevision";
+        String expectedFileName = "samplefile.pdf"; 
+        File downloadedFile = new File(downloadPath + "\\" + expectedFileName);
+        if (downloadedFile.exists()) {
+            long fileSize = downloadedFile.length();
+
+            if (fileSize > 0) {
+                System.out.println("Download successful. File size: " + fileSize + " bytes");
+            } else {
+                System.out.println("File downloaded but it's empty!");
+            }
+        } else {
+            System.out.println("File not found after download attempt.");
 
     }
 }
